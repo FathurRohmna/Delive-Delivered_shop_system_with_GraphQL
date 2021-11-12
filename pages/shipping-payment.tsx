@@ -40,24 +40,39 @@ const Shipping = ({ productOrder }) => {
   const [createOrder] = useMutation(CreateOrderMutation)
   const router = useRouter()
 
-  const onChangeEventAddress = (e:  React.ChangeEvent<{ value: unknown }>) => {
+  const onChangeEventAddress = async (e:  React.ChangeEvent<{ value: unknown }>) => {
     const value = e.target.value
 
     if (value.length >= 1) {
-      axios.get('https://autocomplete.geocoder.ls.hereapi.com/6.2/suggest.json', {
-        'params': {
-          'query': value,
-          'maxresults': 1,
-          'apikey': 'lcYb3A46F8CTF8USOSv-GH9d8CjEDfzJI3antMSTc2E',
-        }
-      }).then(function (response) {
-        const address = response.data.suggestions[0].address;
-        const id = response.data.suggestions[0].locationId;
+      // axios.get('https://autocomplete.geocoder.ls.hereapi.com/6.2/suggest.json', {
+      //   'params': {
+      //     'query': value,
+      //     'maxresults': 1,
+      //     'apikey': 'lcYb3A46F8CTF8USOSv-GH9d8CjEDfzJI3antMSTc2E',
+      //   }
+      // }).then(function (response) {
+      //   const address = response.data.suggestions[0].address;
+      //   const id = response.data.suggestions[0].locationId;
 
-        setAddress({ ...address, locationId: id })
-      })
+      //   setAddress({ ...address, locationId: id })
+      // })
+
+      const address = await axios.get('https://autocomplete.geocoder.ls.hereapi.com/6.2/suggest.json', {
+        'params': {
+        'query': value,
+            'maxresults': 1,
+            'apikey': 'lcYb3A46F8CTF8USOSv-GH9d8CjEDfzJI3antMSTc2E',
+          }
+        })
+      
+      const addressData = address.data.suggestions[0].address
+      const id = address.data.suggestions[0].locationId
+
+      setAddress({ ...addressData, locationId: id })
     }
   }
+
+  console.log(address);
 
   const handleSaveAddress = (e) => {
     e.preventDefault()
@@ -123,7 +138,7 @@ const Shipping = ({ productOrder }) => {
                     small
                     placeholder="exp. Kawunganten Cilacap Jawa Tengah Indonesia"
                     required
-                    value={shippingAddress?.district || ''}
+                    value={address?.district || null}
                     onChange={onChangeEventAddress}
                   />
                   <div className="grid w-full grid-cols-2 mt-4 gap-4 text-gray-400">
@@ -133,7 +148,7 @@ const Shipping = ({ productOrder }) => {
                       placeholder="Street"
                       readOnly
                       small
-                      value={shippingAddress?.district || ''}
+                      value={address?.district || ''}
                       required
                     />
                     <Controllers.InputText
@@ -142,7 +157,7 @@ const Shipping = ({ productOrder }) => {
                       readOnly
                       small
                       placeholder="Zip Code"
-                      value={shippingAddress?.postalCode || ''}
+                      value={address?.postalCode || ''}
                       required
                     />             
                     <Controllers.InputText
@@ -151,7 +166,7 @@ const Shipping = ({ productOrder }) => {
                       placeholder="City"
                       readOnly
                       small
-                      value={shippingAddress?.city || ''}
+                      value={address?.city || ''}
                       required
                     />
                     <Controllers.InputText
@@ -160,7 +175,7 @@ const Shipping = ({ productOrder }) => {
                       readOnly
                       small
                       placeholder="State"
-                      value={shippingAddress?.county || ''}
+                      value={address?.county || ''}
                       required
                     />
                     <Controllers.InputText
@@ -178,7 +193,7 @@ const Shipping = ({ productOrder }) => {
                       placeholder="LocationId"
                       readOnly
                       small
-                      value={shippingAddress?.locationId || ''}
+                      value={address?.locationId || ''}
                       required
                     />
                   </div>

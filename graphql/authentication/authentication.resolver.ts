@@ -60,8 +60,6 @@ export const authentication = extendType({
             return Error('User Not Found')
           }
 
-          console.log(user)
-
           const passwordValid = await compare(args.password, user.password)
 
           if (!passwordValid) {

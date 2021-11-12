@@ -30,11 +30,13 @@ const Home = ({ user }) => {
 
   const handleBuy = (product) => {
     Cookies.set('productOrder', JSON.stringify(product))
-    if (user === null) {
-      router.push('/authentication/login')
+    if (user !== null) {
+      router.push('/shipping-payment')
     }
-    router.push('/shipping-payment')
+    router.push('/authentication/login') 
   }
+
+  console.log(user)
 
   return (
     <div className="relative block">
@@ -158,14 +160,18 @@ export async function getServerSideProps(context) {
   const authToken = context.req?.cookies.Authorization
   let user = null
 
-  if (authToken) {
-    const verificationResponse = jwt.verify(authToken, process.env.JWT_SECRET)
+  try {
+    if (authToken) {
+      const verificationResponse = jwt.verify(authToken, process.env.JWT_SECRET)
 
-    if (verificationResponse) {
-      user = jwt.decode(authToken)
-    } else {
-      user = null
+      if (verificationResponse) {
+        user = jwt.decode(authToken)
+      } else {
+        user = null
+      }
     }
+  } catch (error) {
+    user = null
   }
 
   return {
