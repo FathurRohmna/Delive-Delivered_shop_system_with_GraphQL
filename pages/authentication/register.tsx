@@ -64,8 +64,8 @@ const Register = () => {
       const access = await register({ variables })
       console.log(access)
 
-      Cookies.set('Authorization', access.data.login.access.accessToken, { expires: 60 * 60 * 24 * 7 })
-      Cookies.set('RefreshToken', access.data.login.access.refreshToken, { expires: 60 * 60 * 24 * 7 })
+      Cookies.set('Authorization', access.data.signup.access.accessToken, { expires: 60 * 60 * 24 * 7 })
+      Cookies.set('RefreshToken', access.data.signup.access.refreshToken, { expires: 60 * 60 * 24 * 7 })
       router.push('/')
     } catch (error) {
       setError(error.message)

@@ -34,7 +34,7 @@ export const authentication = extendType({
 
               return {
                 __typename: 'AuthPayload',
-                accessToken,
+                access: accessToken,
                 user
               }
             }
